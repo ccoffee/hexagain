@@ -68,7 +68,7 @@ public class ExcavationAgent : MonoBehaviour
                     BaseLayers.current.layers[layer].positionMap[currentTarget] = -2;
                     BaseLayers.current.layers[layer].excavationData.Remove(currentTarget);
                     currentTarget = Vector2Int.zero;
-                    BaseLayers.current.layers[layer].UpdateMesh(BaseLayers.current.currentLayer == layer);
+                    BaseLayers.current.layers[layer].UpdateMesh(GameManager.Instance.currentLevelView == layer);
                     GameManager.Instance.excavatedTiles++;
                 }
             }

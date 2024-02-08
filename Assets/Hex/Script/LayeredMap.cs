@@ -1,12 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Linq;
 
-public class BaseLayers : MonoBehaviour
+public class LayeredMap : MonoBehaviour
 {
 
-    // public int currentLayer = 0;
+    public int currentViewLayer = 0;
 
     List<Transform> layerTransforms = new List<Transform>();
     public List<BaseLayer> layers = new List<BaseLayer>();
@@ -17,27 +16,14 @@ public class BaseLayers : MonoBehaviour
         }
     }
 
+    public int unlockedDepth = 0;
     public Material layerMaterial;
-
     public Transform cameraBoomTransform;
-
     public static float layerSize = 5f;
 
-    public static BaseLayers current;
+    public void CreateGroundLayers() {
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        current = this;
-        CreateLayers();
-    }
-
-    void CreateLayers() {
-
-        int numberOfLayers = GameManager.Instance.tileMap.depth;
-        Debug.Log("NUMBER OF LEVELS: " + numberOfLayers);
-
-        Hexagons.setHexSize(10f);
+        int numberOfLayers = 6;
 
         List<Vector2Int> generatePositions = new List<Vector2Int>();
         generatePositions = Hexagons.GetNeighborsInRange(new Vector2Int(0, 0), 5);
@@ -45,7 +31,8 @@ public class BaseLayers : MonoBehaviour
         List<Vector2Int> outerPositions = new List<Vector2Int>();
         outerPositions = Hexagons.GetNeighborsInRange(new Vector2Int(0, 0), 6);
 
-        for (int i = 0; i < numberOfLayers; i++) {
+        for (int i = 0; i < numberOfLayers; i++)
+        {
             GameObject newLayer = new GameObject("Layer" + i);
             BaseLayer baseLayer = newLayer.AddComponent<BaseLayer>();
             MeshFilter meshFilter = newLayer.AddComponent<MeshFilter>();
@@ -65,54 +52,38 @@ public class BaseLayers : MonoBehaviour
             meshFilter.mesh = Hexagons.GenerateThickMesh(outerPositions);
             baseLayer.meshCollider.sharedMesh = Hexagons.GenerateMesh(generatePositions);
             meshRenderer.material = layerMaterial;
-            
+
             newLayer.transform.SetParent(transform);
             newLayer.layer = 0;
-            newLayer.transform.localPosition = new Vector3(0, (float)i * -5, 0);
+            newLayer.transform.localPosition = new Vector3(0, (float)i * -layerSize, 0);
 
             layers.Add(baseLayer);
             if (i == 0)
             {
                 ClearPosition(i, Vector2Int.zero);
-            } else {
+            }
+            else
+            {
                 layers[i].UpdateMesh(i != 0);
             }
         }
     }
 
-    public void ClearPosition(int layer, Vector2Int position) {
+    public void ClearPosition(int layer, Vector2Int position)
+    {
         layers[layer].positionMap[position] = -2;
         layers[layer].UpdateMesh(layer != 0);
+    }
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-
-        /*
-        if (Input.mouseScrollDelta.y != 0) {
-            float mouseScroll = Input.mouseScrollDelta.y;
-
-            currentLayer = (int) Mathf.Clamp(currentLayer + (mouseScroll > 0 ? 1 : -1), 0, GameManager.Instance.elevator.depth);
-
-            cameraBoomTransform.transform.position = layers[currentLayer].transform.position;
-
-            for (int i = 0; i < currentLayer; i++) {
-                layers[i].gameObject.SetActive(false);
-            }
-            for (int i = currentLayer; i <= maxDepth; i++)
-            {
-                layers[i].UpdateMesh(i == currentLayer && i != 0); // i == currentLayer && i != 0, i != currentLayer);
-                layers[i].gameObject.SetActive(true);
-                if (i != currentLayer) {
-                    layers[i].meshCollider.enabled = false;
-                } else {
-                    layers[i].meshCollider.enabled = true;
-                }
-            }
-        }
-        */
-
         
     }
 }

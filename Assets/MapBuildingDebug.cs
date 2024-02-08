@@ -22,13 +22,13 @@ public class MapBuildingDebug : MonoBehaviour
     void Update()
     {
 
-        GameManager.Instance.currentMap.buildingPositions.ForEach((buildingPosition) =>
+        GameManager.Instance.buildingMap.buildingPositions.ForEach((buildingPosition) =>
         {
             if (debugObjects.ContainsKey(buildingPosition)) {
                 
             } else {
                 GameObject newGO = Instantiate(textPrefab, transform);
-                newGO.GetComponent<TextMeshProUGUI>().text = GameManager.Instance.currentMap.buildingLocations[buildingPosition].buildingType.title;
+                newGO.GetComponent<TextMeshProUGUI>().text = GameManager.Instance.buildingMap.buildingLocations[buildingPosition].buildingType.title;
 
                 newGO.transform.position = Hexagons.HexToWorld(buildingPosition) + new Vector3(0, 1f, 0) ;
            

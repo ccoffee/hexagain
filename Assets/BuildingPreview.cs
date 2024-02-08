@@ -5,8 +5,8 @@ using UnityEngine;
 public class BuildingPreview : MonoBehaviour
 {
 
-    MeshFilter meshFilter;
-    MeshRenderer meshRenderer;
+    public MeshFilter meshFilter;
+    public MeshRenderer meshRenderer;
 
     public PlaceableBuilding building;
 
@@ -55,7 +55,7 @@ public class BuildingPreview : MonoBehaviour
         Vector2Int gridPosition = Hexagons.WorldToHex(transform.position);
         List<Vector2Int> blockedPositions = new List<Vector2Int>();
 
-        List<Vector2Int> buildingPositions = GameManager.Instance.currentMap.buildingPositions;
+        List<Vector2Int> buildingPositions = GameManager.Instance.buildingMap.buildingPositions;
 
         positions.ForEach((position) =>
         {
@@ -73,6 +73,7 @@ public class BuildingPreview : MonoBehaviour
 
         outlineRenderer.positionCount = outlinePositions.Count;
         outlineRenderer.SetPositions(outlinePositions.ToArray());
+
     }
 
     public void DrawOutline(List<Vector2Int> positions) {

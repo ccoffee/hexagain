@@ -74,7 +74,6 @@ public class AElevator : MonoBehaviour
         {
             depth++;
             BaseLayers.current.ClearPosition(depth, new Vector2Int(0, 0));
-            BaseLayers.current.unlockedDepth = depth;
         }
     }
 

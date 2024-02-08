@@ -9,12 +9,10 @@ Shader "Custom/VertexColorTransparent"
 
         SubShader
         {
-            Tags { "RenderType" = "Transparent" }
-            LOD 100
+            Tags { "Queue" = "Transparent" "RenderType" = "Transparent" }
 
+            LOD 100
             Blend SrcAlpha OneMinusSrcAlpha
-            ZWrite Off
-            ColorMask RGB
 
             CGPROGRAM
             #pragma surface surf Standard alpha:fade
@@ -35,7 +33,7 @@ Shader "Custom/VertexColorTransparent"
                 fixed4 texColor = tex2D(_MainTex, IN.uv_MainTex);
 
                 // Combine vertex color and texture color
-                o.Albedo = texColor.rgb * IN.color.rgb;
+                o.Albedo = texColor * _Color; // texColor.rgb* IN.color.rgb;
 
                 // Set alpha using the alpha channel of the texture, multiplied by the alpha override
                 o.Alpha = texColor.a * _AlphaOverride;
@@ -44,5 +42,5 @@ Shader "Custom/VertexColorTransparent"
         }
 
             // Fallback for other render types
-                FallBack "Diffuse"
+                FallBack "Transparent"
 }

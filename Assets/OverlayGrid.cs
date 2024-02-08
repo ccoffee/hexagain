@@ -116,7 +116,7 @@ public class OverlayGrid : MonoBehaviour
     }
 
     public void RedrawMesh() {
-        List<Vector2Int> positions = GameManager.Instance.currentMap.buildingLocations.Keys.ToList();
+        List<Vector2Int> positions = GameManager.Instance.buildingMap.buildingLocations.Keys.ToList();
 
         meshFilter.mesh = Hexagons.GenerateMesh(Hexagons.GenerateHexGrid(mapSize, mapSize, true), positions);
 

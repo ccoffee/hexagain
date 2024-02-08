@@ -31,7 +31,7 @@ public class BuildingPlacement : MonoBehaviour
 
         for (int i = 0; i < newBuilding.allCoordinates.Length; i++)
         {
-            if (GameManager.Instance.currentMap.buildingLocations.ContainsKey(newBuilding.allCoordinates[i]))
+            if (GameManager.Instance.buildingMap.buildingLocations.ContainsKey(newBuilding.allCoordinates[i]))
             {
                 Debug.Log(string.Format("position is not empty: {0}", newBuilding.allCoordinates[i]));
                 return false;
@@ -74,11 +74,11 @@ public class BuildingPlacement : MonoBehaviour
                     Building newBuilding = newGameObject.GetComponentInChildren<Building>();
                     newBuilding.placedBuilding = newPlacedBuilding;
 
-                    GameManager.Instance.currentMap.placedBuildings.Add(newPlacedBuilding);
+                    GameManager.Instance.buildingMap.placedBuildings.Add(newPlacedBuilding);
                     for (int i = 0; i < newPlacedBuilding.allCoordinates.Length; i++)
                     {
                         Debug.Log(string.Format("Setting map location for building {0}", newPlacedBuilding.allCoordinates[i]));
-                        GameManager.Instance.currentMap.buildingLocations[newPlacedBuilding.allCoordinates[i]] = newPlacedBuilding;
+                        GameManager.Instance.buildingMap.buildingLocations[newPlacedBuilding.allCoordinates[i]] = newPlacedBuilding;
                     }
 
                     FindObjectOfType<OverlayGrid>()?.RedrawMesh();
@@ -106,7 +106,10 @@ public class BuildingPlacement : MonoBehaviour
                 // Debug.Log(hit.point);
                 Vector2Int hexPosition = Hexagons.WorldToHex(hit.point);
                 // Debug.Log(hexPosition);
-                previewTransform.position = Hexagons.HexToWorld(hexPosition);
+                Vector3 offset = new Vector3(0, GameManager.Instance.currentLevelView * BaseLayers.layerSize - BaseLayers.layerSize / 2, 0);
+
+                previewTransform.position = Hexagons.HexToWorld(hexPosition) - offset;
+                //BaseLayers.layerSize * BaseLayers.current.currentLayer; 
 
                 // need to get the localized positions in the preview mesh based on the position to show any blocked tiles
                 buildingPreview.DrawMesh();

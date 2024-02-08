@@ -13,7 +13,6 @@ public class BaseLayer : MonoBehaviour
     public MeshRenderer meshRenderer;
     public MeshCollider meshCollider;
 
-
     public bool hasExposedNeighbors(Vector2Int position) {
 
         bool value = false;
@@ -49,7 +48,7 @@ public class BaseLayer : MonoBehaviour
 
         positionMap.Keys.ToList().ForEach((key) =>
         {
-            if (positionMap[key] == 0) {
+            if (positionMap[key] > -2) {
 
                 bool draw = false;
 

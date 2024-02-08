@@ -11,7 +11,7 @@ Shader "Custom/DistanceTransparency"
     }
         SubShader
         {
-            Tags { "RenderType" = "Opaque" }
+            Tags { "RenderType" = "Transparent" }
             LOD 100
             CGPROGRAM
             #pragma surface surf Lambert alpha:blend
