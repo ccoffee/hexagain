@@ -21,7 +21,7 @@ public class BaseLayers : MonoBehaviour
 
     public Transform cameraBoomTransform;
 
-    public static float layerSize = 5f;
+    public static float layerSize = 10f;
 
     public static BaseLayers current;
 
@@ -48,9 +48,14 @@ public class BaseLayers : MonoBehaviour
         for (int i = 0; i < numberOfLayers; i++) {
             GameObject newLayer = new GameObject("Layer" + i);
             BaseLayer baseLayer = newLayer.AddComponent<BaseLayer>();
-            MeshFilter meshFilter = newLayer.AddComponent<MeshFilter>();
-            MeshRenderer meshRenderer = newLayer.AddComponent<MeshRenderer>();
-            MeshCollider meshCollider = newLayer.AddComponent<MeshCollider>();
+
+            GameObject newLayerVisual = new GameObject("LayerVisual");
+            newLayerVisual.transform.SetParent(newLayer.transform);
+            newLayerVisual.transform.localPosition = new Vector3(0, (BaseLayers.layerSize / 2), 0);
+
+            MeshFilter meshFilter = newLayerVisual.AddComponent<MeshFilter>();
+            MeshRenderer meshRenderer = newLayerVisual.AddComponent<MeshRenderer>();
+            MeshCollider meshCollider = newLayerVisual.AddComponent<MeshCollider>();
 
             baseLayer.positionMap = new Dictionary<Vector2Int, int>();
             baseLayer.meshCollider = meshCollider;
@@ -62,13 +67,13 @@ public class BaseLayers : MonoBehaviour
                 baseLayer.positionMap[genPos] = 0;
             });
 
-            meshFilter.mesh = Hexagons.GenerateThickMesh(outerPositions);
+            meshFilter.mesh = Hexagons.GenerateThickMesh(outerPositions, null, layerSize);
             baseLayer.meshCollider.sharedMesh = Hexagons.GenerateMesh(generatePositions);
             meshRenderer.material = layerMaterial;
             
             newLayer.transform.SetParent(transform);
             newLayer.layer = 0;
-            newLayer.transform.localPosition = new Vector3(0, (float)i * -5, 0);
+            newLayer.transform.localPosition = new Vector3(0, (float)i * -layerSize, 0);
 
             layers.Add(baseLayer);
             if (i == 0)

@@ -701,7 +701,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 861101446}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 2.5, z: 0}
+  m_LocalPosition: {x: 0, y: 0.1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -851,6 +851,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1965701225}
+  - {fileID: 946311159}
   m_Father: {fileID: 0}
   m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -859,6 +860,57 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!1 &946311158
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 946311159}
+  - component: {fileID: 946311160}
+  m_Layer: 5
+  m_Name: ExcavationIndicators
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &946311159
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 946311158}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 922853212}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &946311160
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 946311158}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abf2d358fc46bc546898acd8599d7ea2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  indicatorPrefab: {fileID: 1071259196893094435, guid: 4781c3659c3aa464e9fcce08d3ae4d0c, type: 3}
+  spawnedIndicators: []
 --- !u!4 &965309846 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7924095977665166080, guid: 271964343468ccf48940ed2c9f3cf370, type: 3}
@@ -1546,6 +1598,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buildingMap: {fileID: 0}
   elevator: {fileID: 0}
+  currentLevelView: 0
   excavatedTiles: 0
   defaultTimeScale: 1
   hexSize: 10
@@ -1620,6 +1673,7 @@ GameObject:
   - component: {fileID: 1883693791}
   - component: {fileID: 1883693790}
   - component: {fileID: 1883693792}
+  - component: {fileID: 1883693793}
   m_Layer: 0
   m_Name: BaseLayers
   m_TagString: Untagged
@@ -1639,7 +1693,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af3665e14f5e2a342b68f24aaa7c9afa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentLayer: 0
   layers: []
   layerMaterial: {fileID: 2100000, guid: a33c18f24803a97459aaac2936f17bee, type: 2}
   cameraBoomTransform: {fileID: 1413412250}
@@ -1668,6 +1721,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 78372220c296f624d8db91e9308661db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1883693793
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1883693789}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ee1eb8f474d1d148953bd21e1668b49, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &1919538093
@@ -1981,7 +2046,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2141061464}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

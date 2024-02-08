@@ -33,13 +33,16 @@ public class BuildingPreview : MonoBehaviour
         
 
         Hexagons.setHexSize(10f);
-        meshFilter = meshFilter = GetComponent<MeshFilter>();
+        meshFilter = meshFilter = GetComponentInChildren<MeshFilter>();
         if (!meshFilter)
         {
-            meshFilter = gameObject.AddComponent<MeshFilter>();
+            meshFilter = gameObject.transform.GetChild(0).gameObject.AddComponent<MeshFilter>();
         }
 
-        meshRenderer = gameObject.AddComponent<MeshRenderer>();
+        meshRenderer = gameObject.GetComponentInChildren<MeshRenderer>();
+        if (!meshRenderer) {
+            meshRenderer = gameObject.transform.GetChild(0).gameObject.AddComponent<MeshRenderer>();
+        }
         meshRenderer.material = previewMaterial;
 
         DrawMesh();

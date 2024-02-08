@@ -362,7 +362,7 @@ public static class Hexagons
 
     }
 
-    public static Mesh GenerateThickMesh(List<Vector2Int> coordinates, List<Vector2Int> highlightCoordinates = null)
+    public static Mesh GenerateThickMesh(List<Vector2Int> coordinates, List<Vector2Int> highlightCoordinates = null, float thickness = 5f)
     {
 
         Mesh mesh = new Mesh();
@@ -371,7 +371,7 @@ public static class Hexagons
         List<Vector2> uv = new List<Vector2>();
         List<Color> colors = new List<Color>();
 
-        Vector3 depthOffset = new Vector3(0, 5f, 0);
+        Vector3 depthOffset = new Vector3(0, thickness, 0);
 
         coordinates.ForEach((coordinate) =>
         {

@@ -71,6 +71,8 @@ public class BuildingPlacement : MonoBehaviour
                     PlacedBuilding newPlacedBuilding = new PlacedBuilding(placeableBuilding, hexPosition, rotation);
                     GameObject constructionSitePrefab = placeableBuilding.constructionSitePrefab;
                     GameObject newGameObject = Instantiate(constructionSitePrefab, Hexagons.HexToWorld(hexPosition), Quaternion.Euler(new Vector3(0, -30 + (60 * rotation), 0)));
+                    newGameObject.transform.SetParent(BaseLayers.current.layers[GameManager.Instance.currentLevelView].transform, false);
+                    
                     Building newBuilding = newGameObject.GetComponentInChildren<Building>();
                     newBuilding.placedBuilding = newPlacedBuilding;
 

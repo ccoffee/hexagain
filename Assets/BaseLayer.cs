@@ -81,7 +81,7 @@ public class BaseLayer : MonoBehaviour
             }
         });
 
-        meshFilter.mesh = Hexagons.GenerateThickMesh(generatePositions, hiddenPositions);
+        meshFilter.mesh = Hexagons.GenerateThickMesh(generatePositions, hiddenPositions, BaseLayers.layerSize);
     }
 
     // Start is called before the first frame update
