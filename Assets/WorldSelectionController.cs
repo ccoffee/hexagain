@@ -24,7 +24,7 @@ public class WorldSelectionController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        Deselect();
     }
 
     // Update is called once per frame

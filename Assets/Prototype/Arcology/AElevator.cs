@@ -59,7 +59,7 @@ public class AElevator : MonoBehaviour
                 carLocation = Mathf.Clamp(carLocation - deltaMove, carTarget, carLocation);
             }
 
-            carTransform.position = new Vector3(carTransform.position.x, carLocation * BaseLayers.layerSize, carTransform.position.z);
+            carTransform.localPosition = new Vector3(carTransform.localPosition.x, carLocation * BaseLayers.layerSize, carTransform.localPosition.z);
 
             yield return new WaitForEndOfFrame();
         }
