@@ -16,6 +16,8 @@ public class AElevator : MonoBehaviour
 
     [Tooltip("The current destination of the car")]
     public int carTarget;
+    
+    public float carTargetPosition;
 
     [Tooltip("The list of elevator floor pickup requests")]
     public List<int> elevatorCalls = new List<int>();
@@ -42,24 +44,26 @@ public class AElevator : MonoBehaviour
         // this moves the elevator between wherever it is and wherever the current carTarget is
         // it does not honor elevatorCalls or elevatorDestinations
         float slowestSpeed = 0.1f;
-        while (carLocation != carTarget) {
+
+        while (carTransform.localPosition.y != carTargetPosition) {
 
             // adjust speed to slow down when approaching destination
             float moveSpeed = carSpeed;
-            float distance = Mathf.Abs(carTarget - (float)carLocation);
+            float distance = Mathf.Abs(carTargetPosition - carTransform.localPosition.y);
             if (distance < 0.5f)
             {
                 moveSpeed *= Mathf.Max(slowestSpeed, distance / 0.5f); // make sure the speed isn't too slow
             }
             float deltaMove = Time.deltaTime * moveSpeed;
 
-            if (carLocation < carTarget) {
-                carLocation = Mathf.Clamp(carLocation + deltaMove, carLocation, carTarget);
+            float newLocationY;
+            if (carTransform.localPosition.y < carTargetPosition) {
+                newLocationY = Mathf.Clamp(carTransform.localPosition.y + deltaMove, carTransform.localPosition.y, carTargetPosition);
             } else {
-                carLocation = Mathf.Clamp(carLocation - deltaMove, carTarget, carLocation);
+                newLocationY = Mathf.Clamp(carTransform.localPosition.y - deltaMove, carTargetPosition, carTransform.localPosition.y);
             }
 
-            carTransform.localPosition = new Vector3(carTransform.localPosition.x, carLocation * BaseLayers.layerSize, carTransform.localPosition.z);
+            carTransform.localPosition = new Vector3(carTransform.localPosition.x, newLocationY, carTransform.localPosition.z);
 
             yield return new WaitForEndOfFrame();
         }
@@ -82,7 +86,10 @@ public class AElevator : MonoBehaviour
     }
 
     public void RequestMove(int floor) {
+
         carTarget = floor;
+        carTargetPosition = BaseLayers.current.layerOffsets[floor];
+
         if (movementRoutine != null) {
             StopCoroutine(movementRoutine);
         }
@@ -107,7 +114,7 @@ public class AElevator : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Alpha3))
         {
-            RequestMove(-depth);
+            RequestMove(depth);
         }
     }
 }

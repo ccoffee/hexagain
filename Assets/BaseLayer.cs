@@ -13,6 +13,10 @@ public class BaseLayer : MonoBehaviour
     public MeshRenderer meshRenderer;
     public MeshCollider meshCollider;
 
+    public float layerSize = 10f;
+
+    public float layerPosition = 0f;
+
     public bool hasExposedNeighbors(Vector2Int position) {
 
         bool value = false;

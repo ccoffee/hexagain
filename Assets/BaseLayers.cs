@@ -11,6 +11,9 @@ public class BaseLayers : MonoBehaviour
     List<Transform> layerTransforms = new List<Transform>();
     public List<BaseLayer> layers = new List<BaseLayer>();
 
+    public List<float> layerSizes = new List<float>();
+    public float[] layerOffsets;
+
     public int maxDepth {
         get {
             return layers.Count - 1;
@@ -34,6 +37,8 @@ public class BaseLayers : MonoBehaviour
 
     void CreateLayers() {
 
+        layerOffsets = new float[layerSizes.Count];
+
         int numberOfLayers = GameManager.Instance.tileMap.depth;
         Debug.Log("NUMBER OF LEVELS: " + numberOfLayers);
 
@@ -44,6 +49,8 @@ public class BaseLayers : MonoBehaviour
 
         List<Vector2Int> outerPositions = new List<Vector2Int>();
         outerPositions = Hexagons.GetNeighborsInRange(new Vector2Int(0, 0), 6);
+
+        float layerOffset = 0;
 
         for (int i = 0; i < numberOfLayers; i++) {
             GameObject newLayer = new GameObject("Layer" + i);
@@ -72,8 +79,13 @@ public class BaseLayers : MonoBehaviour
             meshRenderer.material = layerMaterial;
             
             newLayer.transform.SetParent(transform);
-            newLayer.layer = 0;
-            newLayer.transform.localPosition = new Vector3(0, (float)i * -layerSize, 0);
+            newLayer.layer = i;
+
+            layerOffsets[i] = layerOffset;
+
+            newLayer.transform.localPosition = new Vector3(0, layerOffsets[i], 0);
+
+            layerOffset += layerSizes[i];
 
             layers.Add(baseLayer);
             if (i == 0)

@@ -32,6 +32,7 @@ public class ExcavationFlagController : MonoBehaviour
 
                     // only allow excavation of tiles which have an excavated neighbor
                     Vector2Int hexPosition = Hexagons.WorldToHex(hit.point);
+                    if (baseLevels.layers[GameManager.Instance.currentLevelView].positionMap[hexPosition] == -2) return;
                     if (baseLevels.layers[GameManager.Instance.currentLevelView].hasExposedNeighbors(hexPosition))
                     {
                         // Version 1 - base prototype

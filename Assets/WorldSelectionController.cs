@@ -11,6 +11,7 @@ public class WorldSelectionController : MonoBehaviour
 
     public Building selectedBuilding;
     public TestUnit selectedUnit;
+    public static ElevatorSelector selectedElevator;
 
     public List<TestUnit> selectedUnits = new List<TestUnit>();
 
@@ -125,7 +126,7 @@ public class WorldSelectionController : MonoBehaviour
             // Start selecting
             isSelecting = true;
             mousePosition1 = Input.mousePosition;
-            mousePosition1World = GetWorldPointOnYAxis(mousePosition1);
+            mousePosition1World = GetWorldPointOnYAxis(mousePosition1, BaseLayers.current.layerOffsets[GameManager.Instance.currentLevelView] + 10);
         }
         else if (Input.GetMouseButtonUp(0))
         {
@@ -148,7 +149,7 @@ public class WorldSelectionController : MonoBehaviour
     }
 
 
-    Vector3 GetWorldPointOnYAxis(Vector3 screenPoint)
+    Vector3 GetWorldPointOnYAxis(Vector3 screenPoint, float planeY = 0)
     {
         // Create a ray from the mouse position
         Ray ray = Camera.main.ScreenPointToRay(screenPoint);
@@ -158,7 +159,7 @@ public class WorldSelectionController : MonoBehaviour
         // For the Y-axis, the X and Z components are both 0.
 
         // Calculate the scalar parameter (t) for the Y-axis intersection
-        float t = -ray.origin.y / ray.direction.y;
+        float t = (planeY - ray.origin.y) / ray.direction.y;
 
         // Use the parameter to find the intersection point in world space
         Vector3 intersectionPoint = ray.origin + t * ray.direction;
@@ -177,68 +178,143 @@ public class WorldSelectionController : MonoBehaviour
 
         // Debug.DrawLine(mouseWorld1, mouseWorld1 + new Vector3(0, 10, 0), Color.green, 100f);
 
-        Vector3 mouseWorld2 = GetWorldPointOnYAxis(mousePosition2);
+        Vector3 mouseWorld2 = GetWorldPointOnYAxis(mousePosition2, BaseLayers.current.layerOffsets[GameManager.Instance.currentLevelView] + 10f);
 
         // Debug.DrawLine(mouseWorld2, mouseWorld2 + new Vector3(0, 10, 0), Color.green, 100f);
 
-
-        Vector3 center = ((Vector2) Camera.main.WorldToScreenPoint(mousePosition1World) + mousePosition2) * 0.5f;
-        Vector3 halfExtents = new Vector3(Mathf.Abs(mouseWorld2.x - mouseWorld1.x) * 0.5f, 10f, Mathf.Abs(mouseWorld2.z - mouseWorld1.z) * 5f);
-
-        Collider[] colliders = Physics.OverlapBox((mouseWorld1 + mouseWorld2) * 0.5f, halfExtents, Quaternion.identity, ~0);
-
-        Vector3[] corners = new Vector3[8];
-
-        // debug draw the overlap box
-        /*
-        for (int i = 0; i < 4; i++)
+        if (Vector3.Distance(mouseWorld1, mouseWorld2) < 1f)
         {
-            Vector3 cornerScreen = center + Vector3.Scale(halfExtents, new Vector3(Mathf.Pow(-1, i % 2), Mathf.Pow(-1, i / 2), 0.0f));
-            Vector3 cornerWorld = Camera.main.ScreenToWorldPoint(cornerScreen);
-            corners[i] = cornerWorld;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
 
-            int nextIndex = (i + 1) % 2 + 2;
-            corners[nextIndex] = cornerWorld;
-
-            Debug.DrawLine(corners[i], corners[nextIndex], Color.red, 100f);
-            Debug.Log(corners[i]);
-        }
-        */
-
-        if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) {
-
-        } else if (Input.GetKey(KeyCode.LeftControl)) {
-
-        } else {
-            selectedUnits.Clear();
-        }
-
-        foreach (var collider in colliders)
-        {
-            GameObject obj = collider.gameObject;
-
-            if (obj.CompareTag("Selectable"))
+            if (Physics.Raycast(ray, out hit))
             {
-
-                TestUnit hitUnit = obj.GetComponent<TestUnit>();
-                if (hitUnit != null ) {
-                    if (Input.GetKey(KeyCode.LeftControl)) {
-                        if (selectedUnits.Contains(hitUnit)) {
-                            selectedUnits.Remove(hitUnit);
-                        } else {
+                GameObject obj = hit.collider.gameObject;
+                if (hit.collider.gameObject.CompareTag("Selectable"))
+                {
+                    Debug.Log("HIT SELECTABLE RAY + " + obj.name);
+                    TestUnit hitUnit = obj.GetComponent<TestUnit>();
+                    if (hitUnit != null)
+                    {
+                        if (Input.GetKey(KeyCode.LeftControl))
+                        {
+                            if (selectedUnits.Contains(hitUnit))
+                            {
+                                selectedUnits.Remove(hitUnit);
+                            }
+                            else
+                            {
+                                selectedUnits.Add(hitUnit);
+                            }
+                        }
+                        else if (!selectedUnits.Contains(hitUnit))
+                        {
                             selectedUnits.Add(hitUnit);
                         }
-                    } else if (!selectedUnits.Contains(hitUnit)) {
-                        selectedUnits.Add(hitUnit);
+                        selectedElevator = null;
+                    }
+                    else
+                    {
+                        ElevatorSelector hitElevator = obj.GetComponent<ElevatorSelector>();
+                        if (hitElevator != null)
+                        {
+                            selectedElevator = hitElevator;
+                        }
                     }
                 }
+            }
+
+        }
+        else
+        {
+
+            Vector3 center = (mouseWorld2 + mouseWorld1) * 0.5f + new Vector3(0, 10, 0);
+            Vector3 halfExtents = new Vector3(Mathf.Abs(mouseWorld2.x - mouseWorld1.x) * 0.5f, 10f, Mathf.Abs(mouseWorld2.z - mouseWorld1.z) * 0.5f);
+
+            Collider[] colliders = Physics.OverlapBox((mouseWorld1 + mouseWorld2) * 0.5f, halfExtents, Quaternion.identity, ~0);
+
+            Debug.DrawLine(Vector3.zero, (mouseWorld1 + mouseWorld2) * 0.5f, Color.red, 100f);
+
+            Vector3[] corners = new Vector3[8];
+
+            /*
+            // debug draw the overlap box (doesn't work correctly)
+            for (int i = 0; i < 4; i++)
+            {
+
+                Vector3 cornerScreen = center + Vector3.Scale(halfExtents, new Vector3(Mathf.Pow(-1, i % 2), Mathf.Pow(-1, i / 2), 0.0f));
+                Vector3 cornerWorld = Camera.main.ScreenToWorldPoint(cornerScreen);
+                corners[i] = cornerWorld;
+
+                int nextIndex = (i + 1) % 2 + 2;
+                corners[nextIndex] = cornerWorld;
+
+                Debug.DrawLine(corners[i], corners[nextIndex], Color.red, 100f);
+                Debug.Log("Corner:" + corners[i]);
+            }
+            */
+
+            if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
+            {
 
             }
+            else if (Input.GetKey(KeyCode.LeftControl))
+            {
+
+            }
+            else
+            {
+                selectedUnits.Clear();
+            }
+
+            foreach (var collider in colliders)
+            {
+                GameObject obj = collider.gameObject;
+
+                if (obj.CompareTag("Selectable"))
+                {
+                    Debug.Log("HIT SELECTABLE + " + obj.name);
+                    TestUnit hitUnit = obj.GetComponent<TestUnit>();
+                    if (hitUnit != null)
+                    {
+                        if (Input.GetKey(KeyCode.LeftControl))
+                        {
+                            if (selectedUnits.Contains(hitUnit))
+                            {
+                                selectedUnits.Remove(hitUnit);
+                            }
+                            else
+                            {
+                                selectedUnits.Add(hitUnit);
+                            }
+                        }
+                        else if (!selectedUnits.Contains(hitUnit))
+                        {
+                            selectedUnits.Add(hitUnit);
+                        }
+                        selectedElevator = null;
+                    }
+                    else
+                    {
+                        ElevatorSelector hitElevator = obj.GetComponent<ElevatorSelector>();
+                        if (hitElevator != null)
+                        {
+                            selectedElevator = hitElevator;
+                        }
+                    }
+
+
+
+                }
+            }
+
         }
         Debug.Log(string.Format("Selected {0} units", selectedUnits.Count));
 
         if (selectedUnits.Count > 0) {
             DrawUnitOutlines();
+        } else if (selectedElevator != null) {
+
         } else {
             Deselect();
         }

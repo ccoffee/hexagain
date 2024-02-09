@@ -22,7 +22,7 @@ public class ExcavationIndicators : MonoBehaviour
         for (int i = 0; i < excavations.Count || i < spawnedIndicators.Count; i++) {
 
             if (excavations.Count > i) {
-                Vector3 position = Camera.main.WorldToScreenPoint(Hexagons.HexToWorld(excavations[i]) + new Vector3(0, BaseLayers.layerSize * GameManager.Instance.currentLevelView, 0));
+                Vector3 position = Camera.main.WorldToScreenPoint(Hexagons.HexToWorld(excavations[i]) + new Vector3(0, -BaseLayers.layerSize * GameManager.Instance.currentLevelView, 0));
                 spawnedIndicators[i].transform.position = position;
                 spawnedIndicators[i].progressBar.sizeDelta = new Vector2(currentLevel.excavationData[excavations[i]] * 32f, spawnedIndicators[i].progressBar.sizeDelta.y);
                 spawnedIndicators[i].gameObject.SetActive(true);
